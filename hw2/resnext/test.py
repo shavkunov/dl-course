@@ -12,4 +12,6 @@ def test_answer():
         torch.tensor([0, 1])
     )
     
-    trainer.train(dataset, torch.nn.CrossEntropyLoss(), torch.optim.Adam(net.parameters(), lr=1e-3), epochs=1)
+    trainer.train(dataset, torch.optim.Adam(net.parameters(), lr=1e-3), torch.nn.CrossEntropyLoss(), epochs=1)
+
+test_answer()

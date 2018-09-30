@@ -5,7 +5,7 @@ import torch
 class Trainer():
     def __init__(self, network):
         self.net = network
-        self.logger = SummaryWriter("./test")
+        self.logger = SummaryWriter("test")
 
 
     def train(self, dataset, optim, loss, epochs=50, batch=300):
@@ -20,11 +20,13 @@ class Trainer():
                 loss_val.backward()
                 optim.step()
                 
-            tr_loss, tr_accuracy = avg_results(loader)
-            logger.add_scalar("test loss and test_accuracy", test_loss + " : " + test_accuracy, epoch)
+            tr_loss, tr_accuracy = self.avg_results(loader, loss)
+            value = str(tr_loss) + " : " + str(tr_accuracy)
+            self.logger.add_scalar("train loss", tr_loss, epoch)
+            self.logger.add_scalar("train accuracy", tr_accuracy, epoch)
 
 
-    def avg_results(self, data):
+    def avg_results(self, data, loss):
         l = 0.0
         acc = 0.0
         N = len(data)
