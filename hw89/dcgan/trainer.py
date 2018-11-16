@@ -9,13 +9,13 @@ import torch.utils.data
 import torchvision.utils as vutils
 from tensorboardX import SummaryWriter
 
-from homework import metric
+import metric
 
 
 class DCGANTrainer:
 
     def __init__(self, discriminator, generator, optimizer_d, optimizer_g, latent_size=100,
-                 device='cuda', metrics_dir='metrics', save_root='ckpt', log_dir=None):
+                 device='cpu', metrics_dir='metrics', save_root='ckpt', log_dir=None):
         self.net_g = generator
         self.net_d = discriminator
         self.optimizer_d = optimizer_d
@@ -62,7 +62,7 @@ class DCGANTrainer:
                 target = torch.ones(real.size()[0], device=self.device)
 
                 output = self.net_d(real)
-                err_d_real = criterion(output, target)
+                err_d_real = criterion(output, target) # criterion(output, target.reshape(output.shape))
 
                 noise = torch.randn(real.size()[0], self.latent_size, 1, 1, device=self.device)
                 fake = self.net_g(noise)
@@ -76,7 +76,7 @@ class DCGANTrainer:
 
                 target = torch.zeros(real.size()[0], device=self.device)
                 output = self.net_d(fake.detach())
-                err_d_fake = criterion(output, target)
+                err_d_fake = criterion(output, target) # criterion(output, target.reshape(output.shape))
 
                 err_d = err_d_real + err_d_fake
                 err_d.backward()
